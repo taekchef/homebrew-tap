@@ -1,6 +1,6 @@
 cask "weibei" do
   version "1.0.0"
-  sha256 "5d3fdaec802623309b1687e1233d2dd7deaf8ebb5cb5bd7ee69d675f85a6a9d7"
+  sha256 "a78756b5a9a1f28fb008c303d5d97d23756f1efae9dbfc148fc923d624e6cfe6"
 
   url "https://github.com/taekchef/weibei/releases/download/v#{version}/WeiBei-#{version}-macOS-arm64.dmg"
   name "魏碑"

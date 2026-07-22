@@ -12,8 +12,8 @@ The Cask downloads `WeiBei-1.0.0-macOS-arm64.dmg`, verifies its fixed SHA-256, a
 
 Source package identity:
 
-- WeiBei version: `1.0.0 (502)`
-- WeiBei source commit: `288b2d4d6ea1ee34eab52b90e79206fdd15ed058`
-- DMG SHA-256: `5d3fdaec802623309b1687e1233d2dd7deaf8ebb5cb5bd7ee69d675f85a6a9d7`
+- WeiBei version: `1.0.0 (503)`
+- WeiBei source commit: `e9b29c5e48ddeae0c726bddbc10bc9688e22ef82`
+- DMG SHA-256: `a78756b5a9a1f28fb008c303d5d97d23756f1efae9dbfc148fc923d624e6cfe6`
 
 The Cask was generated from the final DMG and passed `brew style`, checksum fetch, isolated installation, metadata/icon verification, and uninstall testing before this staging repository was created.
