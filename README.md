@@ -1,19 +1,15 @@
-# taekchef Homebrew Tap
+# 魏碑 Homebrew 安装渠道
 
-This private staging Tap contains the checksum-pinned Homebrew Cask for WeiBei.
-
-After both this Tap and the matching WeiBei `v1.0.0` GitHub Release are published, install with:
+需要 macOS 14 及以上，支持苹果芯片和英特尔。安装命令：
 
 ```bash
 brew install --cask taekchef/tap/weibei
 ```
 
-The Cask downloads `WeiBei-1.0.0-macOS-arm64.dmg`, verifies its fixed SHA-256, and installs `魏碑.app`. WeiBei v1.0.0 is ad-hoc signed and not notarized by Apple; Homebrew does not disable or bypass Gatekeeper. Follow the per-app **Open Anyway** instructions in the WeiBei README on first launch.
+安装配置会按芯片选择 [魏碑官方发布页](https://github.com/WroughtMind/weibei/releases/latest)的安装盘，并核对固定 SHA-256 校验值。
 
-Source package identity:
+当前版本为 **0.0.1**，构建号 **20261013.0539.56**，来源提交 `8e5bddcca314ddc932e2affa5fa90b99fbc83a5d`。
 
-- WeiBei version: `1.0.0 (503)`
-- WeiBei source commit: `e9b29c5e48ddeae0c726bddbc10bc9688e22ef82`
-- DMG SHA-256: `a78756b5a9a1f28fb008c303d5d97d23756f1efae9dbfc148fc923d624e6cfe6`
+本版采用临时签名，未经 Apple 公证。首次打开可能需要按[发布说明](https://github.com/WroughtMind/weibei/releases/tag/v0.0.1)在系统设置中单独允许；安装命令不会关闭系统安全检查。
 
-The Cask was generated from the final DMG and passed `brew style`, checksum fetch, isolated installation, metadata/icon verification, and uninstall testing before this staging repository was created.
+仓库的安装验收在独立云端 Mac 上完成，验证公开命令、下载校验、应用身份和严格签名；不代替用户首次打开时的系统确认。

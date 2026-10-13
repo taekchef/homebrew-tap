@@ -1,0 +1,80 @@
+name: 验证公开安装渠道
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - Casks/**
+      - .github/workflows/install.yml
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    if: github.event.repository.private == false
+    name: ${{ matrix.arch }} 公开安装
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-26
+          - arch: x86_64
+            runner: macos-26-intel
+    runs-on: ${{ matrix.runner }}
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_ANALYTICS: "1"
+      TARGET_ARCH: ${{ matrix.arch }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: 从公开渠道安装并核对应用
+        run: |
+          test "$CI" = true
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          test "$(uname -m)" = "$TARGET_ARCH"
+          brew install --cask taekchef/tap/weibei
+          brew info --json=v2 --cask taekchef/tap/weibei > cask-info.json
+          codesign --verify --deep --strict '/Applications/魏碑.app'
+          python3 - <<'PYTHON'
+          import json, os, plistlib, subprocess
+          from pathlib import Path
+          app = Path('/Applications/魏碑.app/Contents')
+          info = plistlib.loads((app / 'Info.plist').read_bytes())
+          cask = json.loads(Path('cask-info.json').read_text())['casks'][0]
+          architecture = subprocess.check_output(['lipo', '-archs', str(app / 'MacOS/WeiBei')], text=True).strip()
+          assert info['CFBundleShortVersionString'] == cask['version']
+          assert info['CFBundleIdentifier'] == 'com.changfenhuang.weibei'
+          assert info['WeiBeiSourceDirty'] is False
+          assert architecture == os.environ['TARGET_ARCH']
+          result = {
+              'passed': True,
+              'architecture': architecture,
+              'version': info['CFBundleShortVersionString'],
+              'build_number': info['CFBundleVersion'],
+              'source_revision': info['WeiBeiGitCommit'],
+              'strict_codesign_verified': True,
+              'command': 'brew install --cask taekchef/tap/weibei',
+              'environment': 'isolated GitHub-hosted Mac',
+              'application_launched': False,
+          }
+          Path('install-verification.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
+          print(json.dumps(result, ensure_ascii=False))
+          PYTHON
+      - name: 保留安装证据
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: install-${{ matrix.arch }}
+          path: |
+            cask-info.json
+            install-verification.json
+          if-no-files-found: ignore
+      - name: 清理云端安装副本
+        if: always()
+        run: |
+          if brew list --cask taekchef/tap/weibei >/dev/null 2>&1; then
+            brew uninstall --cask taekchef/tap/weibei
+          fi
